@@ -65,7 +65,8 @@ exports.createInvoice = async (req, res) => {
       }
     }
 
-    return res.status(201).json({ success: true, data: facture });
+    const populatedFacture = await facture.populate('client').populate('lignes.article');
+    return res.status(201).json({ success: true, data: populatedFacture });
 
   } catch (error) {
     console.error("Erreur création facture:", error);
@@ -150,5 +151,47 @@ exports.printInvoice = async (req, res) => {
   }
 };
 
+
+exports.updatefacture = async (req, res) => {
+  try {
+    const updateData = req.body;
+
+    // Recalculate totals if 'lignes' are provided
+    if (updateData.lignes && Array.isArray(updateData.lignes)) {
+      const totalHT = updateData.lignes.reduce(
+        (sum, ligne) => sum + (ligne.quantite * ligne.prixUnitaire), 0
+      );
+      updateData.totalHT = totalHT;
+      updateData.totalTTC = totalHT + (totalHT * (updateData.tvaRate ?? 20) / 100);
+    }
+
+    const updatedFacture = await Facture.findByIdAndUpdate(
+      req.params.id,
+      updateData,
+      { new: true }
+    );
+
+    if (!updatedFacture) {
+      return res.status(404).json({ error: 'Facture non trouvée' });
+    }
+
+    res.status(200).json({ success: true, data: updatedFacture });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+
+exports.deletefacture = async (req, res) => {
+  try {
+    const deletedFacture = await Facture.findByIdAndDelete(req.params.id);
+    if (!deletedFacture) {
+      return res.status(404).json({ error: 'Facture non trouvée' });
+    }
+    res.status(200).json({ message: 'Facture supprimée avec succès' });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
 // Note: J'ai remarqué que vous aviez des doublons de getInvoices et getInvoiceById
 // dans votre code original. Je les ai supprimés dans cette version corrigée.

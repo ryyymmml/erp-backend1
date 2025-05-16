@@ -5,7 +5,7 @@ const pdfController = require('./pdfController'); // Assuming pdfController has 
 // Créer une commande fournisseur
 exports.createPurchaseOrder = async (req, res) => {
   try {
-    const { supplierId, products } = req.body;
+    const { supplierId, products, status } = req.body; 
     let totalAmount = 0;
     
     // Calcul du total de la commande
@@ -17,7 +17,7 @@ exports.createPurchaseOrder = async (req, res) => {
       supplierId,
       products,
       totalAmount,
-      status: 'en attente',
+      status: status || 'en attente',
     });
 
     // Sauvegarder la commande fournisseur

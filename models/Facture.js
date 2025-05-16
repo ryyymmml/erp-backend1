@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const factureSchema = new mongoose.Schema({
   numero: { type: String, required: true, unique: true },
-  client: { type: mongoose.Schema.Types.ObjectId, ref: 'Fournisseur', required: true },
+  client: { type: mongoose.Schema.Types.ObjectId, ref: 'Client', required: true },
   type: { type: String, enum: ['invoice', 'quote'], default: 'invoice' },
   lignes: [
     {
