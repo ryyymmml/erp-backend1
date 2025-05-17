@@ -2,6 +2,7 @@ const Joi = require('joi');
 
 const articleSchema = Joi.object({
   code: Joi.string().required(),
+  name: Joi.string().required(),
   designation: Joi.string().required(),
   famille: Joi.string().allow('', null),
   prixAchat: Joi.number().allow(null),

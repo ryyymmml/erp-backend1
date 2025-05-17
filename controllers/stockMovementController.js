@@ -1,11 +1,13 @@
 const StockMovement = require('../models/StockMovement');
 
-exports.addStockMovement = async (movementData) => {
+exports.addStockMovement = async (req, res) => {
   try {
-    const stockMovement = new StockMovement(movementData);
-    await stockMovement.save();
-    return stockMovement;
+    const stockMovement = new StockMovement(req.body);
+    const savedStockMovement = await stockMovement.save();
+    res.status(201).json(savedStockMovement);
+    
   } catch (error) {
+    
     throw new Error('Error adding stock movement: ' + error.message);
   }
 };
