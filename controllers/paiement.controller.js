@@ -105,5 +105,44 @@ exports.getPaiementById = async (req, res) => {
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
+
+ 
+};
+ // Delete all payments
+exports.deleteAllPaiements = async (req, res) => {
+  try {
+    // Optional: Add confirmation parameter for safety
+    const { confirm } = req.query;
+    
+    if (confirm !== 'true') {
+      return res.status(400).json({ 
+        error: 'Confirmation required. Add ?confirm=true to confirm deletion' 
+      });
+    }
+
+    // First get all payments to update associated invoices
+    const allPaiements = await Paiement.find({});
+    
+    // Update all associated invoices to 'non payée'
+    const factureIds = allPaiements.map(p => p.facture);
+    await Facture.updateMany(
+      { _id: { $in: factureIds } },
+      { statut: 'non payée' }
+    );
+
+    // Then delete all payments
+    const result = await Paiement.deleteMany({});
+
+    res.status(200).json({
+      message: `Successfully deleted ${result.deletedCount} payments`,
+      deletedCount: result.deletedCount
+    });
+
+  } catch (err) {
+    res.status(500).json({ 
+      error: err.message,
+      message: 'An error occurred while deleting payments' 
+    });
+  }
 };
 
