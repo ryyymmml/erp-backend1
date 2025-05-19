@@ -4,6 +4,9 @@ const paiementController = require('../controllers/paiement.controller');
 
 router.post('/', paiementController.creerPaiement);
 router.get('/', paiementController.getPaiements);
+
+router.delete('/delete-all', paiementController.deleteAllPaiements);
 router.delete('/:id', paiementController.deletePaiement);
+
 
 module.exports = router;
