@@ -13,15 +13,15 @@ exports.createPurchaseClient = async (req, res) => {
       totalAmount += product.price * product.quantity;
     }
 
-    const newPurchaseClient = new PurchaseClient({
+    const purchaseClient = new PurchaseClient({
       clientId,
       products,
       totalAmount,
       status: status || 'en attente',
     });
 
-    await newPurchaseClient.save();
-    res.status(201).send(newPurchaseClient);
+    await purchaseClient.save();
+    res.status(201).send(purchaseClient);
   } catch (error) {
     res.status(400).send({ error: error.message });
   }
@@ -68,8 +68,8 @@ const purchaseClient = await PurchaseClient.findById(PurchaseClientId);
 // Liste des commandes fournisseurs
 exports.getPurchaseClients = async (req, res) => {
   try {
-    const PurchaseClient = await PurchaseClient.find().populate('supplierId').populate('products.productId');
-    res.status(200).send(PurchaseClient);
+    const purchaseClient = await PurchaseClient.find().populate([{path : 'clientId'}, {path : 'products.productId'}]);
+    res.status(200).send(purchaseClient);
   } catch (error) {
     res.status(400).send({ error: error.message });
   }
@@ -78,11 +78,11 @@ exports.getPurchaseClients = async (req, res) => {
 // Détail d'une commande fournisseur
 exports.getPurchaseClientById = async (req, res) => {
   try {
-    const PurchaseClient = await PurchaseClient.findById(req.params.id).populate('supplierId').populate('products.productId');
+    const purchaseClient = await PurchaseClient.findById(req.params.id).populate('clientId').populate('products.productId');
     if (!PurchaseClient) {
-      return res.status(404).send({ error: 'Commande fournisseur non trouvée' });
+      return res.status(404).send({ error: 'Commande client non trouvée' });
     }
-    res.status(200).send(PurchaseClient);
+    res.status(200).send(purchaseClient);
   } catch (error) {
     res.status(400).send({ error: error.message });
   }
@@ -91,9 +91,9 @@ exports.getPurchaseClientById = async (req, res) => {
 // Impression de la commande fournisseur (génération PDF)
 exports.printPurchaseClient = async (req, res) => {
   try {
-    const PurchaseClient = await PurchaseClient.findById(req.params.id).populate('supplierId').populate('products.productId');
-    if (!PurchaseClient) {
-      return res.status(404).send({ error: 'Commande fournisseur non trouvée' });
+    const purchaseClient = await PurchaseClient.findById(req.params.id).populate('clientId').populate('products.productId');
+    if (!purchaseClient) {
+      return res.status(404).send({ error: 'Commande client non trouvée' });
     }
     // Utiliser pdfController pour générer PDF (implémentation dépend de pdfController)
     const pdfBuffer = await pdfController.generatePurchaseOrderPDF(purchaseclient);
@@ -107,8 +107,8 @@ exports.printPurchaseClient = async (req, res) => {
 // Impression du bon de réception (génération PDF)
 exports.printReceptionOrder = async (req, res) => {
   try {
-    const PurchaseClient = await PurchaseClient.findById(req.params.id).populate('supplierId').populate('products.productId');
-    if (!PurchaseClient) {
+    const purchaseClient = await PurchaseClient.findById(req.params.id).populate('clientId').populate('products.productId');
+    if (!purchaseClient) {
       return res.status(404).send({ error: 'Bon de réception non trouvé' });
     }
     // Utiliser pdfController pour générer PDF du bon de réception
@@ -126,15 +126,15 @@ const purchaseclient = require('../models/purchaseclient');
 // Conversion de la commande fournisseur en facture
 exports.convertPurchaseClientToInvoice = async (req, res) => {
   try {
-    const PurchaseClient = await PurchaseClient.findById(req.params.id).populate('supplierId').populate('products.productId');
-    if (!PurchaseClient) {
-      return res.status(404).send({ error: 'Commande fournisseur non trouvée' });
+    const purchaseClient = await PurchaseClient.findById(req.params.id).populate('clientId').populate('products.productId');
+    if (!purchaseClient) {
+      return res.status(404).send({ error: 'Commande client non trouvée' });
     }
 
     // Prepare invoice data
     const invoiceData = {
-      client: PurchaseClient.clientId,
-      lignes: PurchaseClient.products.map(product => ({
+      client: purchaseClient.clientId,
+      lignes: purchaseClient.products.map(product => ({
         article: product.productId._id,
         quantite: product.quantity,
         prixUnitaire: product.price,
