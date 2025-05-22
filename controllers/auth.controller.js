@@ -16,11 +16,11 @@ exports.login = async (req, res) => {
       return res.status(401).json({ error: 'Invalid email or password' });
     }
 const token = jwt.sign(
-  { id: user._id, role: user.role },
+  { id: user._id, role: user.role , userName : user.name },
   JWT_SECRET,
   { expiresIn: '1d' }
 );
-    res.json({ token });
+    res.json({ token , role: user.role , userId: user._id, userName : user.name });
   } catch (err) {
     res.status(500).json({ error: 'Server error', details: err.message });
   }

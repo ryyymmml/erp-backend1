@@ -5,6 +5,6 @@ const express = require('express');
    const { authMiddleware, isAdmin } = require('../middleware/authMiddleware');
 
    router.post('/register', validateUser, userController.register);
-   router.get('/', authMiddleware, isAdmin, userController.getUsers);
+   router.get('/', authMiddleware,/*  isAdmin ,*/ userController.getUsers);
 
    module.exports = router;

@@ -48,10 +48,10 @@ const fournisseurRoutes = require('./Routes/fournisseurRoutes');
 const authRoutes = require('./Routes/auth.routes');
 const clientRoutes = require('./Routes/client.routes');
 const factureRoutes = require('./Routes/factureRoutes');
-<<<<<<< HEAD
-=======
+
+
 const facture_fournisseurRoutes = require('./Routes/facture_fournisseur.routes');
->>>>>>> bill-supplier-management
+
 const stockMovementRoutes = require('./Routes/stockMovementRoutes');
 const articleRoutes = require('./Routes/articleRoutes');
 const userRoutes = require('./Routes/user.routes');
@@ -63,11 +63,8 @@ const orderRoutes = require('./Routes/orderRoutes');
 
 const reportRoutes = require('./Routes/reportRoutes');
 const purchaseOrderRoutes = require('./Routes/purchaseOrderRoutes');
-<<<<<<< HEAD
-=======
 const purchaseClientRoutes = require('./Routes/purchaseclientRoutes');
 
->>>>>>> bill-supplier-management
 
 const configRoutes = require('./Routes/configRoutes');
 const avoirRoutes = require('./Routes/avoirRoutes');
@@ -87,10 +84,7 @@ app.use('/api/fournisseurs', fournisseurRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/clients', authMiddleware, clientRoutes); // Protect client routes with auth
 app.use('/api/factures', authMiddleware, factureRoutes); // Protect facture routes with auth
-<<<<<<< HEAD
-=======
 app.use('/api/facture_fournisseurs', authMiddleware, facture_fournisseurRoutes); // Protect facture routes with auth
->>>>>>> bill-supplier-management
 app.use('/api/stock-movements', authMiddleware, stockMovementRoutes); // Protect stock movement routes with auth
 app.use('/api/paiements', authMiddleware, paiementRoutes); // Protect paiement routes with auth
 app.use('/api/employes', authMiddleware, employeRoutes); // Protect employe routes with auth
@@ -98,11 +92,8 @@ app.use('/api/paies', authMiddleware, paieRoutes); // Protect paie routes with a
 app.use('/api/abonnements',  abonnementRoutes); // Protect abonnement routes with auth
 app.use('/api/orders', authMiddleware, orderRoutes); // Protect order routes with auth
 app.use('/api/purchase-orders', authMiddleware, purchaseOrderRoutes); // Protect purchase order routes with auth
-<<<<<<< HEAD
-=======
 app.use('/api/purchaseclients', authMiddleware, purchaseClientRoutes); 
 
->>>>>>> bill-supplier-management
 app.use('/api/reports', reportRoutes); // Add report routes
 
 app.use('/api/config', configRoutes);

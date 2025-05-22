@@ -53,7 +53,7 @@ exports.createInvoice = async (req, res) => {
     await facture.save();
 
     // Log stock movement for sales (only if invoice, not quote)
-    if (facture.type === 'invoice') {
+/*     if (facture.type === 'invoice') {
       for (const ligne of facture.lignes) {
         await stockMovementController.addStockMovement({
           articleId: ligne.article,
@@ -63,10 +63,14 @@ exports.createInvoice = async (req, res) => {
           relatedDocumentModel: 'Facture',
         });
       }
-    }
+    } */
 
-    const populatedFacture = await facture.populate('client').populate('lignes.article');
-    return res.status(201).json({ success: true, data: populatedFacture });
+    const populatedFacture = await facture.populate([
+      { path: 'client' },
+      { path: 'lignes.article' }
+    ]);
+
+    return res.status(201).json({ success: true, data: facture._id  });
 
   } catch (error) {
     console.error("Erreur création facture:", error);
